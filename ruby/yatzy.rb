@@ -1,256 +1,126 @@
 class Yatzy
-  def self.chance(d1, d2, d3, d4, d5)
-    total = 0
-    total += d1
-    total += d2
-    total += d3
-    total += d4
-    total += d5
-    return total
+  def initialize(*dice)
+    @dice = dice
   end
 
-  def self.yatzy(dice)
-    counts = [0]*(dice.length+1)
-    for die in dice do
-      counts[die-1] += 1
-    end
-    for i in 0..counts.size do
-      if counts[i] == 5
-        return 50
-      end
-    end
-    return 0
+  def chance
+    face_values.sum
   end
 
-  def self.ones( d1,  d2,  d3,  d4,  d5)
-    sum = 0
-    if (d1 == 1)
-      sum += 1
-    end
-    if (d2 == 1)
-      sum += 1
-    end
-    if (d3 == 1)
-      sum += 1
-    end
-    if (d4 == 1)
-      sum += 1
-    end
-    if (d5 == 1)
-      sum += 1
-    end
-
-    sum
-  end
-
-  def self.twos( d1,  d2,  d3,  d4,  d5)
-    sum = 0
-    if (d1 == 2)
-      sum += 2
-    end
-    if (d2 == 2)
-      sum += 2
-    end
-    if (d3 == 2)
-      sum += 2
-    end
-    if (d4 == 2)
-      sum += 2
-    end
-    if (d5 == 2)
-      sum += 2
-    end
-    return sum
-  end
-
-  def self.threes( d1,  d2,  d3,  d4,  d5)
-    s = 0
-    if (d1 == 3)
-      s += 3
-    end
-    if (d2 == 3)
-      s += 3
-    end
-    if (d3 == 3)
-      s += 3
-    end
-    if (d4 == 3)
-      s += 3
-    end
-    if (d5 == 3)
-      s += 3
-    end
-    return s
-  end
-
-  def initialize(d1, d2, d3, d4, _5)
-    @dice = [0]*5
-    @dice[0] = d1
-    @dice[1] = d2
-    @dice[2] = d3
-    @dice[3] = d4
-    @dice[4] = _5
-  end
-
-  def fours
-    sum = 0
-    for at in Array 0..4
-      if (@dice[at] == 4)
-        sum += 4
-      end
-    end
-    return sum
-  end
-
-  def fives()
-    s = 0
-    i = 0
-    for i in (Range.new(0, @dice.size))
-      if (@dice[i] == 5)
-        s = s + 5
-      end
-    end
-    s
-  end
-
-  def sixes
-    sum = 0
-    for at in 0..@dice.length
-      if (@dice[at] == 6)
-        sum = sum + 6
-      end
-    end
-    return sum
-  end
-
-  def self.score_pair( d1,  d2,  d3,  d4,  d5)
-    counts = [0]*6
-    counts[d1-1] += 1
-    counts[d2-1] += 1
-    counts[d3-1] += 1
-    counts[d4-1] += 1
-    counts[d5-1] += 1
-    at = 0
-    (0...6).each do |at|
-      if (counts[6-at-1] >= 2)
-        return (6-at)*2
-      end
-    end
-    return 0
-  end
-
-  def self.two_pair( d1,  d2,  d3,  d4,  d5)
-    counts = [0]*6
-    counts[d1-1] += 1
-    counts[d2-1] += 1
-    counts[d3-1] += 1
-    counts[d4-1] += 1
-    counts[d5-1] += 1
-    n = 0
-    score = 0
-    for i in Array 0..5
-      if (counts[6-i-1] >= 2)
-        n = n+1
-        score += (6-i)
-      end
-    end
-    if (n == 2)
-      return score * 2
-    else
-      return 0
-    end
-  end
-
-  def self.four_of_a_kind( _1,  _2,  d3,  d4,  d5)
-    tallies = [0]*6
-    tallies[_1-1] += 1
-    tallies[_2-1] += 1
-    tallies[d3-1] += 1
-    tallies[d4-1] += 1
-    tallies[d5-1] += 1
-    for i in (0..6)
-      if (tallies[i] >= 4)
-        return (i+1) * 4
-      end
-    end
-    return 0
-  end
-
-  def self.three_of_a_kind( d1,  d2,  d3,  d4,  d5)
-    t = [0]*6
-    t[d1-1] += 1
-    t[d2-1] += 1
-    t[d3-1] += 1
-    t[d4-1] += 1
-    t[d5-1] += 1
-    for i in [0,1,2,3,4,5]
-      if (t[i] >= 3)
-        return (i+1) * 3
-      end
-    end
+  def yatzy
+    return 50 if unique_face_values.count == 1
     0
   end
 
-  def self.smallStraight( d1,  d2,  d3,  d4,  d5)
-    tallies = [0]*6
-    tallies[d1-1] += 1
-    tallies[d2-1] += 1
-    tallies[d3-1] += 1
-    tallies[d4-1] += 1
-    tallies[d5-1] += 1
-    (tallies[0] == 1 and
-      tallies[1] == 1 and
-      tallies[2] == 1 and
-      tallies[3] == 1 and
-      tallies[4] == 1) ? 15 : 0
+  def ones
+    check_for_number(1)
   end
 
-  def self.largeStraight( d1,  d2,  d3,  d4,  d5)
-    tallies = [0]*6
-    tallies[d1-1] += 1
-    tallies[d2-1] += 1
-    tallies[d3-1] += 1
-    tallies[d4-1] += 1
-    tallies[d5-1] += 1
-    if (tallies[1] == 1 and tallies[2] == 1 and tallies[3] == 1 and tallies[4] == 1 and tallies[5] == 1)
-      return 20
+  def twos
+    check_for_number(2)
+  end
+
+  def threes
+    check_for_number(3)
+  end
+
+  def fours
+    check_for_number(4)
+  end
+
+  def fives
+    check_for_number(5)
+  end
+
+  def sixes
+    check_for_number(6)
+  end
+
+  def two_pair
+    sum = 0
+    pair_count = 0
+
+    sorted_face_values_that_occur_more_than(2).reverse_each do |num|
+      sum += num * 2
+      pair_count += 1
     end
-    return 0
+    if pair_count == 2
+      return sum
+    end
+
+    0
   end
 
-  def self.fullHouse( d1,  d2,  d3,  d4,  d5)
-    tallies = []
-    _2 = false
-    i = 0
-    _2_at = 0
-    _3 = false
-    _3_at = 0
+  def four_of_a_kind
+    check_for_multiple_occurs(4)
+  end
 
-    tallies = [0]*6
-    tallies[d1-1] += 1
-    tallies[d2-1] += 1
-    tallies[d3-1] += 1
-    tallies[d4-1] += 1
-    tallies[d5-1] += 1
+  def three_of_a_kind
+    check_for_multiple_occurs(3)
+  end
 
-    for i in Array 0..5
-      if (tallies[i] == 2)
-        _2 = true
-        _2_at = i+1
+  def small_straight
+    (face_values & a_small_straight).count == 5 ? 15 : 0
+  end
+
+  def large_straight
+    (face_values & (2..6).to_a).count == 5 ? 20 : 0
+  end
+
+  def fullHouse
+    return 0 unless full_house?
+
+    unique_face_values.reduce(0) do |sum, face_value|
+      sum + face_value * face_values.count(face_value)
+    end
+  end
+
+  def score_pair
+    sorted_face_values_that_occur_more_than(2).reverse_each do |num|
+      return num * 2
+    end
+
+    0
+  end
+
+  private
+
+  def check_for_number(num)
+    sum = 0
+    face_values.each do |die|
+      if die == num
+        sum += die
       end
     end
-
-    for i in Array 0..5
-      if (tallies[i] == 3)
-        _3 = true
-        _3_at = i+1
-      end
-    end
-
-    if (_2 and _3)
-      return _2_at * 2 + _3_at * 3
-    else
-      return 0
-    end
+    sum
   end
+
+  def sorted_face_values_that_occur_more_than(number)
+    (1..6).filter { |num| face_values.count(num) >= number }
+  end
+
+  def check_for_multiple_occurs(min_occurences)
+    sorted_face_values_that_occur_more_than(min_occurences).each do |num|
+      return num * min_occurences
+    end
+
+    0
+  end
+
+  def a_small_straight
+    (1..5).to_a
+  end
+
+  def face_values
+    @dice
+  end
+
+  def unique_face_values
+    face_values.uniq
+  end
+
+  def full_house?
+    unique_face_values.count == 2
+  end
+
 end
